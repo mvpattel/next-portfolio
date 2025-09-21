@@ -10,7 +10,16 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  // Base configs (bridged from .eslintrc style)
+  ...compat.extends(
+    "eslint:recommended",
+    "next/core-web-vitals",
+    "next/typescript",
+    "plugin:import/recommended",
+    "prettier"
+  ),
+
+  // Custom rules & ignores
   {
     ignores: [
       "node_modules/**",
@@ -19,6 +28,25 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+    rules: {
+      // Import ordering
+      "import/order": [
+        "error",
+        {
+          "newlines-between": "always",
+          "alphabetize": { order: "asc" },
+          "groups": [
+            ["builtin", "external", "internal"],
+            ["parent", "sibling", "index"],
+          ],
+        },
+      ],
+    },
+    settings: {
+      "import/resolver": {
+        typescript: {}, // makes import plugin aware of TS paths
+      },
+    },
   },
 ];
 
